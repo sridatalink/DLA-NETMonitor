@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Identity;
 
 namespace LOTONetMonitor.Domain.Entities
@@ -21,5 +22,15 @@ namespace LOTONetMonitor.Domain.Entities
         /// Is this user account active
         /// </summary>
         public bool IsActive { get; set; } = true;
+
+        /// <summary>
+        /// When the user was created
+        /// </summary>
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// When the user was last updated
+        /// </summary>
+        public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
     }
 }
