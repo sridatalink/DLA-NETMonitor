@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-LOTONetMonitor-6a7b8c9d0e1f2g3h</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

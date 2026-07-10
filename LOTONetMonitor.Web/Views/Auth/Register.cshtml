@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Register - LOTO NET Monitor";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h2 class="card-title mb-0">
+                        <i class="bi bi-person-plus"></i> Register
+                    </h2>
+                    <p class="text-light small mb-0 mt-2">Create a new LOTO NET Monitor account</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" asp-action="Register" novalidate>
+                        @if (ModelState.HasError(string.Empty))
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-circle"></i>
+                                @ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control form-control-lg" placeholder="Enter your full name" />
+                            <span asp-validation-for="FullName" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control form-control-lg" placeholder="Enter your email" />
+                            <span asp-validation-for="Email" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control form-control-lg" placeholder="Create a strong password" />
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-info-circle"></i> Password must contain uppercase, lowercase, and numbers (min 8 characters)
+                            </small>
+                            <span asp-validation-for="Password" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control form-control-lg" placeholder="Confirm your password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="bi bi-person-plus"></i> Create Account
+                        </button>
+                    </form>
+
+                    <hr class="my-3" />
+
+                    <p class="text-center text-muted small mb-0">
+                        Already have an account? <a asp-controller="Auth" asp-action="Login" class="text-decoration-none fw-bold">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
