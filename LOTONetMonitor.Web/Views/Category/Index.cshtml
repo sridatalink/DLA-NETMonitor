@@ -1,0 +1,77 @@
+@model LOTONetMonitor.Web.Models.Category.CategoryListViewModel
+
+@{
+    ViewData["Title"] = "Delete Category - LOTO NET Monitor";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="page-title">
+                <i class="bi bi-folder-x"></i> Categories
+            </h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Create" class="btn btn-success" asp-controller="Category">
+                <i class="bi bi-plus-circle"></i> Add New Category
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Grid -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-list"></i> Categories
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    @if (Model != null)
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <h5 class="mb-1">@Model.CategoryName</h5>
+                                <span class="badge bg-primary">@Model.DeviceCount devices</span>
+                            </div>
+                            <p class="mb-1 text-muted">@Model.Description</p>
+                            <small class="text-muted">Created: @Model.CreatedDate.ToString("g")</small>
+                            <div class="mt-2">
+                                <a asp-action="Edit" asp-route-id="@Model.CategoryID" asp-controller="Category" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                @if (Model.DeviceCount == 0)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@Model.CategoryID" asp-controller="Category" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-outline-danger" disabled title="Cannot delete category with devices">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle"></i> Information
+                </h5>
+                <p class="small text-muted mb-0">
+                    Categories help organize your devices. You can only delete a category if it has no devices assigned to it.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+@model LOTONetMonitor.Web.Models.Device.DeviceListViewModel
+
+@{
+    ViewData["Title"] = "Delete Device - LOTO NET Monitor";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="page-title">
+                <i class="bi bi-exclamation-triangle"></i> Delete Device
+            </h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card border-danger shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-exclamation-circle"></i> Confirm Device Deletion
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Warning!</strong> This action will delete the device and all its associated ping logs and alerts. This cannot be undone.
+                </div>
+
+                <h5>Device Information:</h5>
+                <table class="table table-borderless">
+                    <tr>
+                        <td><strong>Device Name:</strong></td>
+                        <td>@Model.DeviceName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IP Address:</strong></td>
+                        <td><code>@Model.IPAddress</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Category:</strong></td>
+                        <td>@Model.CategoryName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Location:</strong></td>
+                        <td>@Model.Location</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Current Status:</strong></td>
+                        <td>
+                            <span class="badge bg-@(Model.CurrentStatus == "Online" ? "success" : Model.CurrentStatus == "Offline" ? "danger" : "warning")">
+                                @Model.CurrentStatus
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+
+                <hr />
+
+                <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.DeviceID">
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i>
+                        Are you absolutely sure you want to delete this device? Please click the "Delete" button below to confirm.
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you absolutely sure?');">
+                            <i class="bi bi-trash"></i> Delete Device
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,211 @@
+@model LOTONetMonitor.Web.Models.Device.DeviceViewModel
+
+@{
+    ViewData["Title"] = "Edit Device - LOTO NET Monitor";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="page-title">
+                <i class="bi bi-pencil-square"></i> Edit Device
+            </h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <span class="badge bg-@(Model.CurrentStatus == "Online" ? "success" : Model.CurrentStatus == "Offline" ? "danger" : "warning")">
+                @Model.CurrentStatus
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" asp-action="Edit" asp-route-id="@Model.DeviceID" novalidate>
+                    <input type="hidden" asp-for="DeviceID" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle"></i> Please fix the following errors:
+                    </div>
+
+                    <!-- Device Info Section -->
+                    <h5 class="mb-3">
+                        <i class="bi bi-gear"></i> Device Information
+                    </h5>
+
+                    <div class="mb-3">
+                        <label asp-for="DeviceName" class="form-label"></label>
+                        <input asp-for="DeviceName" class="form-control form-control-lg" />
+                        <span asp-validation-for="DeviceName" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="IPAddress" class="form-label"></label>
+                        <input asp-for="IPAddress" class="form-control form-control-lg" />
+                        <small class="text-muted d-block mt-1">IPv4 or IPv6 format</small>
+                        <span asp-validation-for="IPAddress" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryID" class="form-label"></label>
+                        <select asp-for="CategoryID" class="form-select form-select-lg" asp-items="ViewBag.Categories"></select>
+                        <span asp-validation-for="CategoryID" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Location" class="form-label"></label>
+                        <input asp-for="Location" class="form-control form-control-lg" />
+                        <span asp-validation-for="Location" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <hr />
+
+                    <!-- Status Info -->
+                    <h5 class="mb-3">
+                        <i class="bi bi-activity"></i> Current Status
+                    </h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="alert alert-info mb-0">
+                                <strong>Status:</strong> @Model.CurrentStatus
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-info mb-0">
+                                <strong>Failure Count:</strong> @Model.FailureCount
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.LastPing.HasValue)
+                    {
+                        <div class="alert alert-light mb-3">
+                            <strong>Last Ping:</strong> @Model.LastPing.Value.ToString("g")
+                            @if (Model.ResponseTime.HasValue)
+                            {
+                                <span class="float-end"><strong>Response:</strong> @Model.ResponseTime ms</span>
+                            }
+                        </div>
+                    }
+
+                    <hr />
+
+                    <!-- Monitoring Settings -->
+                    <h5 class="mb-3">
+                        <i class="bi bi-clock"></i> Monitoring Settings
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="PingIntervalSeconds" class="form-label"></label>
+                                <input asp-for="PingIntervalSeconds" type="number" class="form-control" min="10" max="3600" />
+                                <small class="text-muted d-block mt-1">Seconds between pings (10-3600)</small>
+                                <span asp-validation-for="PingIntervalSeconds" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="TimeoutThreshold" class="form-label"></label>
+                                <input asp-for="TimeoutThreshold" type="number" class="form-control" min="1" max="10" />
+                                <small class="text-muted d-block mt-1">Failures before offline (1-10)</small>
+                                <span asp-validation-for="TimeoutThreshold" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Alert Settings -->
+                    <h5 class="mb-3">
+                        <i class="bi bi-bell"></i> Alert Settings
+                    </h5>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="EmailAlertEnabled" class="form-check-input" type="checkbox" />
+                        <label asp-for="EmailAlertEnabled" class="form-check-label"></label>
+                        <small class="d-block text-muted">Receive email notifications when device status changes</small>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="SMSAlertEnabled" class="form-check-input" type="checkbox" />
+                        <label asp-for="SMSAlertEnabled" class="form-check-label"></label>
+                        <small class="d-block text-muted">Receive SMS notifications when device status changes</small>
+                    </div>
+
+                    <hr />
+
+                    <!-- Active Status -->
+                    <div class="form-check mb-3">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                        <small class="d-block text-muted">Uncheck to disable monitoring for this device</small>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-light mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle"></i> Device Summary
+                </h5>
+                <table class="table table-sm mb-0">
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>@Model.DeviceName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IP:</strong></td>
+                        <td><code>@Model.IPAddress</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td>
+                            <span class="badge bg-@(Model.CurrentStatus == "Online" ? "success" : Model.CurrentStatus == "Offline" ? "danger" : "warning")">
+                                @Model.CurrentStatus
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm bg-danger bg-opacity-10">
+            <div class="card-body">
+                <h5 class="card-title text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Danger Zone
+                </h5>
+                <a asp-action="Delete" asp-route-id="@Model.DeviceID" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-trash"></i> Delete This Device
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

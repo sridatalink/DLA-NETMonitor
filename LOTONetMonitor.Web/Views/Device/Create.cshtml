@@ -1,0 +1,143 @@
+@model LOTONetMonitor.Web.Models.Device.DeviceViewModel
+
+@{
+    ViewData["Title"] = "Create Device - LOTO NET Monitor";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="page-title">
+                <i class="bi bi-plus-circle"></i> Create New Device
+            </h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" asp-action="Create" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle"></i> Please fix the following errors:
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DeviceName" class="form-label"></label>
+                        <input asp-for="DeviceName" class="form-control form-control-lg" placeholder="e.g., Primary Server" />
+                        <span asp-validation-for="DeviceName" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="IPAddress" class="form-label"></label>
+                        <input asp-for="IPAddress" class="form-control form-control-lg" placeholder="e.g., 192.168.1.100" />
+                        <small class="text-muted d-block mt-1">IPv4 or IPv6 format</small>
+                        <span asp-validation-for="IPAddress" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryID" class="form-label"></label>
+                        <select asp-for="CategoryID" class="form-select form-select-lg" asp-items="ViewBag.Categories">
+                            <option value="">-- Select a category --</option>
+                        </select>
+                        <span asp-validation-for="CategoryID" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Location" class="form-label"></label>
+                        <input asp-for="Location" class="form-control form-control-lg" placeholder="e.g., Data Center 1 - Rack A" />
+                        <span asp-validation-for="Location" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Device description..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <hr />
+
+                    <h5 class="mb-3">Monitoring Settings</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="PingIntervalSeconds" class="form-label"></label>
+                                <input asp-for="PingIntervalSeconds" type="number" class="form-control" min="10" max="3600" />
+                                <small class="text-muted d-block mt-1">Seconds between pings (10-3600)</small>
+                                <span asp-validation-for="PingIntervalSeconds" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="TimeoutThreshold" class="form-label"></label>
+                                <input asp-for="TimeoutThreshold" type="number" class="form-control" min="1" max="10" />
+                                <small class="text-muted d-block mt-1">Failures before offline (1-10)</small>
+                                <span asp-validation-for="TimeoutThreshold" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h5 class="mb-3">Alert Settings</h5>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="EmailAlertEnabled" class="form-check-input" type="checkbox" />
+                        <label asp-for="EmailAlertEnabled" class="form-check-label"></label>
+                        <small class="d-block text-muted">Receive email notifications when device status changes</small>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="SMSAlertEnabled" class="form-check-input" type="checkbox" />
+                        <label asp-for="SMSAlertEnabled" class="form-check-label"></label>
+                        <small class="d-block text-muted">Receive SMS notifications when device status changes</small>
+                    </div>
+
+                    <hr />
+
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                        <small class="d-block text-muted">Enable monitoring for this device</small>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Create Device
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle"></i> Tips
+                </h5>
+                <ul class="small text-muted mb-0">
+                    <li>Device name should be unique and descriptive</li>
+                    <li>IP address can be IPv4 or IPv6 format</li>
+                    <li>Choose an appropriate category for organization</li>
+                    <li>Ping interval should be between 10-3600 seconds</li>
+                    <li>Lower timeout threshold = faster offline detection</li>
+                    <li>Enable alerts to receive notifications</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

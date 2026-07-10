@@ -1,0 +1,78 @@
+@model LOTONetMonitor.Web.Models.Category.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Create Category - LOTO NET Monitor";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="page-title">
+                <i class="bi bi-plus-circle"></i> Create New Category
+            </h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" asp-action="Create" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle"></i> Please fix the following errors:
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryName" class="form-label"></label>
+                        <input asp-for="CategoryName" class="form-control form-control-lg" placeholder="e.g., Data Center" />
+                        <span asp-validation-for="CategoryName" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Category description..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Create Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle"></i> Tips
+                </h5>
+                <ul class="small text-muted mb-0">
+                    <li>Category names must be unique</li>
+                    <li>Use descriptive names for easy identification</li>
+                    <li>Example categories: Data Center, Servers, Routers</li>
+                    <li>You can assign multiple devices to one category</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

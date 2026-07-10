@@ -1,0 +1,190 @@
+@model LOTONetMonitor.Web.Models.Device.DeviceIndexViewModel
+
+@{
+    ViewData["Title"] = "Device Management - LOTO NET Monitor";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="page-title">
+                <i class="bi bi-hdd-network"></i> Device Management
+            </h1>
+        </div>
+        <div class="col-md-6 text-end">
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Add New Device
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" asp-action="Index" class="row g-3">
+            <div class="col-md-3">
+                <label asp-for="SearchTerm" class="form-label"></label>
+                <input asp-for="SearchTerm" class="form-control" placeholder="Device name or IP..." />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="SelectedCategoryID" class="form-label"></label>
+                <select asp-for="SelectedCategoryID" class="form-select">
+                    <option value="">-- All Categories --</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.CategoryID">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="SelectedStatus" class="form-label"></label>
+                <select asp-for="SelectedStatus" class="form-select">
+                    <option value="">-- All Status --</option>
+                    <option value="Online">Online</option>
+                    <option value="Offline">Offline</option>
+                    <option value="Warning">Warning</option>
+                    <option value="Unknown">Unknown</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Devices Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-light border-bottom">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-list"></i> 
+            Devices <span class="badge bg-primary">@Model.Devices.Count()</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Devices.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Device Name</th>
+                            <th>IP Address</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Last Ping</th>
+                            <th>Response Time</th>
+                            <th>Alerts</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var device in Model.Devices)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@device.DeviceName</strong>
+                                </td>
+                                <td>
+                                    <code>@device.IPAddress</code>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@device.CategoryName</span>
+                                </td>
+                                <td>@device.Location</td>
+                                <td>
+                                    @{
+                                        var statusClass = device.CurrentStatus switch
+                                        {
+                                            "Online" => "success",
+                                            "Offline" => "danger",
+                                            "Warning" => "warning",
+                                            _ => "secondary"
+                                        };
+                                        var statusIcon = device.CurrentStatus switch
+                                        {
+                                            "Online" => "check-circle",
+                                            "Offline" => "exclamation-circle",
+                                            "Warning" => "exclamation-triangle",
+                                            _ => "question-circle"
+                                        };
+                                    }
+                                    <span class="badge bg-@statusClass">
+                                        <i class="bi bi-@statusIcon"></i> @device.CurrentStatus
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (device.LastPing.HasValue)
+                                    {
+                                        <small class="text-muted">@device.LastPing.Value.ToString("g")</small>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-muted">Never</small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (device.ResponseTime.HasValue)
+                                    {
+                                        <span class="badge bg-light text-dark">@device.ResponseTime ms</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (device.EmailAlertEnabled)
+                                    {
+                                        <i class="bi bi-envelope text-success" title="Email Alerts Enabled"></i>
+                                    }
+                                    @if (device.SMSAlertEnabled)
+                                    {
+                                        <i class="bi bi-chat-dots text-info" title="SMS Alerts Enabled"></i>
+                                    }
+                                    @if (!device.EmailAlertEnabled && !device.SMSAlertEnabled)
+                                    {
+                                        <small class="text-muted">None</small>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Edit" asp-route-id="@device.DeviceID" class="btn btn-outline-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@device.DeviceID" class="btn btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle"></i> No devices found. 
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="alert-link">Create one now</a>
+                }
+            </div>
+        }
+    </div>
+</div>
